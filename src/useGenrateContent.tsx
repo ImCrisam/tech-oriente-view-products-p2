@@ -89,7 +89,7 @@ export const useGenerateContent = () => {
         console.error('Error parsing JSON:', error);
       }
 
-
+      /* eslint-disable @typescript-eslint/no-explicit-any */
     } catch (err: any) {
       setError(err.message || "Something went wrong");
     } finally {
