@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+const MODEL_CURRENT ="gemini-1.5-flash-8b"//gemini-1.5-flash
 export interface GenerateContentProps {
   name_user: string;
   token: string;
@@ -7,16 +8,19 @@ export interface GenerateContentProps {
   use_product: string;
   type_product_current: string;
 }
+
 export const useGenerateContent = () => {
   const [data, setData] = useState<[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+
 
   const generateContent = async (props: GenerateContentProps) => {
     setLoading(true);
     setError(null);
 
     const { type_product, use_product, type_product_current, token } = props;
+
 
     // Crear el prompt usando las propiedades proporcionadas
     const promptMessage = `Generate a list of products of type ${type_product}, suitable for ${use_product}, with a budget of ${type_product_current}. I want you to return the result in JSON format with the following structure:
@@ -50,7 +54,7 @@ export const useGenerateContent = () => {
 
     try {
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro-latest:generateContent?key=${token}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_CURRENT}:generateContent?key=${token}`,
         {
           method: "POST",
           headers: {
@@ -69,6 +73,7 @@ export const useGenerateContent = () => {
           }),
         }
       );
+
 
       if (!response.ok) {
         throw new Error(`Error ${response.status}: ${response.statusText}`);
