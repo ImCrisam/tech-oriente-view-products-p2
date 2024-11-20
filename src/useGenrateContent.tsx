@@ -1,6 +1,26 @@
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { useState } from "react";
 
-const MODEL_CURRENT ="gemini-1.5-flash-8b"//gemini-1.5-flash
+const MODEL_CURRENT = "gemini-1.5-flash-8b"; //gemini-1.5-flash ||  gemini-1.5-flash-8b
+
+interface Article {
+  nombreLargo: string;
+  nombreCorto: string;
+  precio: string;
+  descripcion: string;
+}
+
+export interface AnyArticle extends Article {
+  propiedades: {
+    [key: string]: string; // Claves de tipo string con valores de tipo string
+  };
+}
+export interface reponse {
+  PrecioMaximo: string;
+  PrecioMinimo: string;
+  Articulos: AnyArticle[];
+}
+
 export interface GenerateContentProps {
   name_user: string;
   token: string;
@@ -10,88 +30,66 @@ export interface GenerateContentProps {
 }
 
 export const useGenerateContent = () => {
-  const [data, setData] = useState<[]>([]);
+  const [data, setData] = useState<reponse>({} as reponse);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-
   const generateContent = async (props: GenerateContentProps) => {
-    setLoading(true);
+    setLoading(false);
     setError(null);
 
     const { type_product, use_product, type_product_current, token } = props;
 
-
-    // Crear el prompt usando las propiedades proporcionadas
-    const promptMessage = `Generate a list of products of type ${type_product}, suitable for ${use_product}, with a budget of ${type_product_current}. I want you to return the result in JSON format with the following structure:
-
-[
-  {
-    "long_name": "A detailed product name",
-    "short_name": "A concise product name",
-    "price": "Product price in numeric format, within the specified budget",
-    "image_url": "A valid URL pointing to the product image",
-    "description": "Description based on its intended use",
-    "attributes": {
-      "key1": "value1",
-      "key2": "value2",
-      ...
-    }
-  },
-  {
-    "long_name": "Another product name",
-    "short_name": "Another concise name",
-    "price": "Another price",
-    "image_url": "Another image URL",
-    "description": "Description based on its intended use",
-    "attributes": {
-      "key1": "value1",
-      "key2": "value2",
-      ...
-    }
+    const promptMessageEs = `Genera una lista de articulos del tipo ${type_product}, adecuados para ${use_product}, con un presupuesto de ${type_product_current} pesos colombianos. Quiero que devuelvas el resultado en formato JSON con la siguiente estructura:
+    {
+    PrecioMaximo: "Precio del producto en formato numérico, dentro del presupuesto especificado"
+    PrecioMinimo: "Precio del producto en formato numérico, dentro del presupuesto especificado"
+    Articulos :[
+      {
+        "nombreLargo": "Un nombre detallado del producto",
+        "nombreCorto": "Un nombre conciso del producto",
+        "precio": "Precio del producto en formato numérico, dentro del presupuesto especificado",
+        "descripcion": "Descripción basada en el uso previsto",
+        "propiedades": {
+          "key1": "value1",
+          "key2": "value2",
+          ...
+        }
+      },
+      {
+        "nombreLargo": "Otro nombre de producto",
+        "nombreCorto": "Otro nombre conciso",
+        "precio": "Otro precio",
+        "descripcion": "Descripción basada en el uso previsto",
+        "propiedades": {
+          "key1": "value1",
+          "key2": "value2",
+          ...
+        }
+      }
+    ]
   }
-]`;
+incluye 10 Articulos.  
+`;
 
     try {
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_CURRENT}:generateContent?key=${token}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            contents: [
-              {
-                parts: [
-                  {
-                    text: promptMessage,
-                  },
-                ],
-              },
-            ],
-          }),
-        }
-      );
-
-
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      }
-
-      const result = await response.json();
-      const rawText = result.candidates[0].content.parts[0].text;
+      const genAI = new GoogleGenerativeAI(token);
+      const model = genAI.getGenerativeModel({ model: MODEL_CURRENT });
+      const result = await model.generateContent(promptMessageEs);
+      const response = await result.response;
+      const rawText = response.text();
 
       // Remover el bloque de código si está presente
-      const cleanedText = rawText.replace(/```json|```/g, '').trim();
+      const cleanedText = rawText.replace(/```json|```/g, "").trim();
+      console.log("Cleaned Text:", cleanedText);
 
       try {
-        // Convertir el texto JSON en un objeto JavaScript
+        //Convertir el texto JSON en un objeto JavaScript
         const jsonData = await JSON.parse(cleanedText);
-        setData(jsonData)
-        console.log('Parsed JSON:', jsonData);
+        setData(jsonData);
+        console.log("Parsed JSON:", jsonData);
       } catch (error) {
-        console.error('Error parsing JSON:', error);
+        console.error("Error parsing JSON:", error);
       }
 
       /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -104,4 +102,3 @@ export const useGenerateContent = () => {
 
   return { data, error, loading, generateContent };
 };
-
