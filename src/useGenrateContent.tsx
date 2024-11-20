@@ -35,7 +35,7 @@ export const useGenerateContent = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const generateContent = async (props: GenerateContentProps) => {
-    setLoading(false);
+    setLoading(true);
     setError(null);
 
     const { type_product, use_product, type_product_current, token } = props;

@@ -1,38 +1,47 @@
-import './index.css'
+import "./index.css";
 const loby = () => {
   return (
-    <div>
-     <header>
-      <h1>Consultora TechBot</h1>
-      <p>Te ayudamos a elegir el equipo perfecto para tus necesidades</p>
-    </header>
-
-    <div className="container">
-      <div className="intro">
+    <div className="w-screen h-screen  flex flex-column justify-content-between align-items-center">
+      <header className="w-full">
         <h1>Bienvenido a Consultora TechBot</h1>
         <p>
-          ¿No estás seguro de qué equipo electrónico necesitas? Nuestro bot
-          inteligente te asistirá para encontrar el equipo perfecto, ya sea una
-          laptop, celular o cualquier otro dispositivo.
+          Tu asistente virtual para encontrar las mejores opciones en
+          MercadoLibre Colombia
         </p>
+      </header>
+
+      <div className="container flex flex-column w-full">
+        <div className="intro">
+          <h2>¿Qué es TechBot?</h2>
+          <p>
+            TechBot es un bot inteligente diseñado para ayudarte a encontrar y
+            sugerir los productos más adecuados a tus necesidades en
+            <strong> MercadoLibre Colombia</strong>. Ya sea que busques una
+            laptop, un celular o cualquier otro dispositivo, TechBot te guiará
+            en cada paso.
+          </p>
+          <p>
+            Para comenzar, simplemente abre el chat en la esquina inferior
+            izquierda e interactúa con TechBot. ¡Es rápido, fácil y eficiente!
+          </p>
+        </div>
+        <div className="credits">
+          <p>
+            Este proyecto ha sido desarrollado como parte del programa
+            <strong> Talento Tech Oriente</strong>.
+          </p>
+          <p>
+            Hecho por: <strong>Cristian Mauricio Arias</strong>
+          </p>
+        </div>
       </div>
+      <div className="my-5"></div>
 
-      <a href="chat.html" className="chatbot-btn">Hablar con TechBot</a>
-
-      <div className="credits">
-        <p>
-          Este proyecto ha sido desarrollado como parte del programa
-          <strong>Talento Tech Oriente</strong>.
-        </p>
-        <p>Hecho por: <strong>Cristian Mauricio Arias</strong></p>
-      </div>
+      <footer className="w-full">
+        <p>&copy; 2024 Consultora TechBot. Todos los derechos reservados.</p>
+      </footer>
     </div>
+  );
+};
 
-    <footer>
-      <p>&copy; 2024 Consultora TechBot. Todos los derechos reservados.</p>
-    </footer>
-    </div>
-  )
-}
-
-export default loby
+export default loby;

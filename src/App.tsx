@@ -8,7 +8,7 @@ import {
 
 import { DataView } from "primereact/dataview";
 import { classNames } from "primereact/utils";
-import { Button } from "primereact/button";
+import { ThreeDot } from "react-loading-indicators";
 
 function App() {
   const [queryParams, setQueryParams] = useState<GenerateContentProps>(
@@ -39,14 +39,6 @@ function App() {
   useEffect(() => {
     console.log(data);
   }, [data]);
-
-  if (!Object.keys(queryParams).length) {
-    return <Start />;
-  }
-
-  if (loading) {
-    return <div>Cargando...</div>;
-  }
 
   function linkMeli(name: string) {
     const url = new URL(
@@ -95,7 +87,7 @@ function App() {
     );
   };
 
-  const listTemplate = (items) => {
+  const listTemplate = (items: []) => {
     if (!items || items.length === 0) return null;
 
     const list = items.map((data, index) => {
@@ -104,6 +96,24 @@ function App() {
 
     return <div className="grid grid-nogutter">{list}</div>;
   };
+
+  if (!Object.keys(queryParams).length) {
+    return <Start />;
+  }
+
+  if (loading) {
+    return (
+      <div className="flex justify-content-center align-items-center h-screen w-screen">
+        <ThreeDot
+          variant="bounce"
+          color="#0078d7"
+          size="large"
+          text="Pensando"
+          textColor=""
+        />
+      </div>
+    );
+  }
   if (data) {
     return (
       <div className="mb-7 ml-8 mt-3 mr-3">
@@ -113,19 +123,7 @@ function App() {
   }
   return (
     <div className="App">
-      {loading && <p>Loading...</p>}
       {error && <p style={{ color: "red" }}>Error: {error}</p>}
-      {data && (
-        <div>
-          <p>
-            Estos son los productos que encontramos para ti{" "}
-            <strong>{queryParams.name_user}</strong>
-          </p>
-        </div>
-      )}
-      {!loading && !error && !data && (
-        <p>Please wait while we process your request...</p>
-      )}
     </div>
   );
 }
