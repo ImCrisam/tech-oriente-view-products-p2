@@ -69,7 +69,7 @@ export const useGenerateContent = () => {
       }
     ]
   }
-incluye 10 Articulos.  
+incluye 10 Articulos.  Solo, y Solo dame El Json que te pedi, sin incluir mas texto.
 `;
 
     try {
